@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aplikasi Manajemen Harga Barang
 
-## Getting Started
+Aplikasi web full-stack untuk manajemen data dan harga barang dengan operasi CRUD (Create, Read, Update, Delete). Dibangun dengan Next.js App Router, MySQL (Aiven), dan Tailwind CSS.
 
-First, run the development server:
+## Fitur
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- ✅ **Create**: Menambah data barang baru (nama & harga).
+- 📖 **Read**: Menampilkan daftar barang dalam bentuk tabel data yang responsif.
+- ✏️ **Update**: Mengedit nama dan harga barang secara inline.
+- 🗑️ **Delete**: Menghapus data barang dengan konfirmasi.
+- 📊 **Dashboard Ringkasan**: Menampilkan total item dan estimasi total nilai aset.
+- 🎨 **Desain Modern**: Antarmuka bersih dengan Tailwind CSS dan ikon dari Lucide React.
+- 🔒 **Koneksi Aman**: Koneksi database terenkripsi SSL/TLS ke Aiven.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Teknologi yang Digunakan
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework**: [Next.js](https://nextjs.org/) (App Router, Server Actions)
+- **Bahasa**: [TypeScript](https://www.typescriptlang.org/)
+- **Database**: [MySQL](https://www.mysql.com/) (di-host di [Aiven](https://aiven.io/))
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Ikon**: [Lucide React](https://lucide.dev/)
+- **Deployment**: [Vercel](https://vercel.com/)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Prasyarat
 
-## Learn More
+- Node.js (v18 atau lebih baru)
+- Akun Aiven (untuk database MySQL)
+- Git
 
-To learn more about Next.js, take a look at the following resources:
+## Cara Menjalankan Secara Lokal
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  **Clone repositori**:
+    ```bash
+    git clone https://github.com/USERNAME/harga-barang-app.git
+    cd harga-barang-app
+2. **Download Node Modules**
+    npm install
+3. **Jalankan Website di localhost**
+    npm run dev
+    server akan berjalan di [localhost300](http://localhost:3000/)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Buat Tabel di SQL Milikmu
+CREATE TABLE barang (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  nama VARCHAR(255) NOT NULL,
+  harga DECIMAL(12, 2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
