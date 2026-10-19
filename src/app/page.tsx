@@ -4,6 +4,8 @@ import ItemBarang from '@/components/ItemBarang';
 import { Barang } from '@/types/barang';
 import { Package, Wallet } from 'lucide-react';
 
+// TAMBAHKAN BARIS INI UNTUK MEMAKSA RENDER DINAMIS
+export const dynamic = 'force-dynamic';
 export default async function Home() {
   const daftarBarang: Barang[] = await getDaftarBarang();
 

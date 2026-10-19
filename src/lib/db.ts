@@ -1,20 +1,33 @@
-// src/lib/db.ts
 import mysql from 'mysql2/promise';
 import fs from 'fs';
 import path from 'path';
 
-// Baca CA certificate untuk SSL Aiven
-const caCertPath = path.resolve(process.cwd(), process.env.DB_SSL_CA || './certs/ca.pem');
 let sslConfig: { ca?: string; rejectUnauthorized?: boolean } | undefined;
 
-if (process.env.DB_SSL === 'true' && fs.existsSync(caCertPath)) {
-  sslConfig = {
-    ca: fs.readFileSync(caCertPath, 'utf-8'),
-    rejectUnauthorized: true, // Wajib untuk Aiven agar verifikasi SSL berjalan[reference:9]
-  };
+if (process.env.DB_SSL === 'true') {
+  let caCert: string | undefined;
+
+  // 1. Untuk Vercel (Production) - Membaca dari Base64 Env
+  if (process.env.DB_SSL_CA_BASE64) {
+    caCert = Buffer.from(process.env.DB_SSL_CA_BASE64, 'base64').toString('utf-8');
+  }
+  // 2. Untuk Lokal (Development) - Membaca dari file fisik
+  else if (process.env.DB_SSL_CA) {
+    // Tambahkan /*turbopackIgnore: true*/ agar Vercel tidak protes
+    const caCertPath = path.resolve(/*turbopackIgnore: true*/ process.cwd(), process.env.DB_SSL_CA);
+    if (fs.existsSync(caCertPath)) {
+      caCert = fs.readFileSync(caCertPath, 'utf-8');
+    }
+  }
+
+  if (caCert) {
+    sslConfig = {
+      ca: caCert,
+      rejectUnauthorized: true,
+    };
+  }
 }
 
-// Singleton pool untuk menghindari kebocoran koneksi di serverless/dev
 const globalForPool = globalThis as unknown as { mysqlPool: mysql.Pool | undefined };
 
 export const pool =
@@ -27,7 +40,7 @@ export const pool =
     database: process.env.DB_NAME,
     ssl: sslConfig,
     waitForConnections: true,
-    connectionLimit: 10, // Batasi koneksi untuk menghindari kehabisan slot di Aiven[reference:10]
+    connectionLimit: 10,
     queueLimit: 0,
   });
 
