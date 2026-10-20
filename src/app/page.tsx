@@ -1,19 +1,18 @@
-import { connection } from 'next/server'; // Tambahkan import ini
+import { connection } from 'next/server'; // 1. Tambahkan import ini
 import { getDaftarBarang } from './actions';
 import FormTambahBarang from '@/components/FormTambahBarang';
 import ItemBarang from '@/components/ItemBarang';
 import { Barang } from '@/types/barang';
 import { Package, Wallet } from 'lucide-react';
 
-export default async function Home() {
-  // Paksa render dinamis dengan connection()
-  await connection(); 
-  
-export default async function Home() {
-  const daftarBarang: Barang[] = await getDaftarBarang();
+// 2. HAPUS baris: export const dynamic = 'force-dynamic';
 
-  // Menghitung total nilai barang
-  const totalNilai = daftarBarang.reduce((sum, item) => sum + Number(item.harga), 0);
+export default async function Home() {
+  // 3. Tambahkan baris ini untuk memaksa render dinamis
+  await connection(); 
+
+  const daftarBarang: Barang[] = await getDaftarBarang();
+  const totalNilai = daftarBarang.reduce((sum, item) => sum + Number(item.harga), 0);;
 
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
