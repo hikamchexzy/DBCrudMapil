@@ -23,9 +23,29 @@ Aplikasi web full-stack untuk manajemen data dan harga barang dengan operasi CRU
 
 ## Prasyarat
 
-- Node.js (v18 atau lebih baru)
+- Node.js (v20.9 atau lebih baru; diwajibkan oleh Next.js 16)
 - Akun Aiven (untuk database MySQL)
 - Git
+
+## Konfigurasi Environment di Vercel
+
+Tambahkan variabel berikut pada **Project Settings → Environment Variables** untuk setiap environment yang digunakan:
+
+- `DB_HOST`
+- `DB_PORT`
+- `DB_USER`
+- `DB_PASSWORD`
+- `DB_NAME`
+- `DB_SSL=true`
+- `DB_SSL_CA_BASE64`: isi dengan konten sertifikat CA dalam Base64.
+
+File `.env.local` dan `certs/ca.pem` tidak disertakan dalam Git. Karena itu, jangan gunakan `DB_SSL_CA=./certs/ca.pem` di Vercel. Untuk membuat nilai Base64 secara lokal, jalankan PowerShell:
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("certs/ca.pem"))
+```
+
+Salin hasilnya ke `DB_SSL_CA_BASE64` di Vercel. Untuk development lokal, gunakan `DB_SSL_CA=./certs/ca.pem` seperti pada `.env.local.example`.
 
 ## Cara Menjalankan Secara Lokal
 

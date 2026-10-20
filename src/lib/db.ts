@@ -1,34 +1,28 @@
 import mysql from 'mysql2/promise';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
-let sslConfig: { ca?: string; rejectUnauthorized?: boolean } | undefined;
+let ssl: { ca?: string; rejectUnauthorized: boolean } | undefined;
 
 if (process.env.DB_SSL === 'true') {
-  let caCert: string | undefined;
+  let ca: string | undefined;
 
-  // 1. Untuk Vercel (Production) - Membaca dari Base64 Env
   if (process.env.DB_SSL_CA_BASE64) {
-    caCert = Buffer.from(process.env.DB_SSL_CA_BASE64, 'base64').toString('utf-8');
-  }
-  // 2. Untuk Lokal (Development) - Membaca dari file fisik
-  else if (process.env.DB_SSL_CA) {
-    // Tambahkan /*turbopackIgnore: true*/ agar Vercel tidak protes
-    const caCertPath = path.resolve(/*turbopackIgnore: true*/ process.cwd(), process.env.DB_SSL_CA);
-    if (fs.existsSync(caCertPath)) {
-      caCert = fs.readFileSync(caCertPath, 'utf-8');
-    }
+    ca = Buffer.from(process.env.DB_SSL_CA_BASE64, 'base64').toString('utf8');
+  } else if (process.env.DB_SSL_CA) {
+    const caPath = path.resolve(
+      /* turbopackIgnore: true */ process.cwd(),
+      process.env.DB_SSL_CA,
+    );
+    ca = fs.readFileSync(caPath, 'utf8');
   }
 
-  if (caCert) {
-    sslConfig = {
-      ca: caCert,
-      rejectUnauthorized: true,
-    };
-  }
+  ssl = { ca, rejectUnauthorized: true };
 }
 
-const globalForPool = globalThis as unknown as { mysqlPool: mysql.Pool | undefined };
+const globalForPool = globalThis as unknown as {
+  mysqlPool: mysql.Pool | undefined;
+};
 
 export const pool =
   globalForPool.mysqlPool ??
@@ -38,7 +32,7 @@ export const pool =
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl: sslConfig,
+    ssl,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
