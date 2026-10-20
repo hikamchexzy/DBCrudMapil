@@ -1,11 +1,14 @@
+import { connection } from 'next/server'; // Tambahkan import ini
 import { getDaftarBarang } from './actions';
 import FormTambahBarang from '@/components/FormTambahBarang';
 import ItemBarang from '@/components/ItemBarang';
 import { Barang } from '@/types/barang';
 import { Package, Wallet } from 'lucide-react';
 
-// TAMBAHKAN BARIS INI UNTUK MEMAKSA RENDER DINAMIS
-export const dynamic = 'force-dynamic';
+export default async function Home() {
+  // Paksa render dinamis dengan connection()
+  await connection(); 
+  
 export default async function Home() {
   const daftarBarang: Barang[] = await getDaftarBarang();
 
